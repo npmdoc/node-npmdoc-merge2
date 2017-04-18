@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/teambition/merge2"
-
-    >merge2 (v1.0.3)</a>
+    <a href="https://github.com/teambition/merge2">merge2 (v1.0.3)</a>
 </h1>
 <h4>Merge multiple streams into one stream in sequence or parallel.</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.merge2">module merge2</a><ol>
 
@@ -100,7 +93,7 @@
   var args = slice.call(arguments)
   var options = args[args.length - 1]
 
-  if (options &#x26;&#x26; !Array.isArray(options) &#x26;&#x26; options.pipe == null) args.pop()
+  if (options &amp;&amp; !Array.isArray(options) &amp;&amp; options.pipe == null) args.pop()
   else options = {}
 
   var doEnd = options.end !== false
@@ -109,7 +102,7 @@
   var mergedStream = PassThrough(options)
 
   function addStream () {
-    for (var i = 0, len = arguments.length; i &#x3c; len; i++) {
+    for (var i = 0, len = arguments.length; i &lt; len; i++) {
       streamsQueue.push(pauseStreams(arguments[i], options))
     }
     mergeStream()
@@ -127,45 +120,45 @@
     var pipesCount = streams.length + 1
 
     function next () {
-      if (--pipesCount &#x3e; 0) return
+      if (--pipesCount &gt; 0) return
       merging = false
       mergeStream()
     }
 
     function pipe (stream) {
       function onend () {
-        stream.removeListener(&#x27;merge2UnpipeEnd&#x27;, onend)
-        stream.removeListener(&#x27;finish&#x27;, onend)
-        stream.removeListener(&#x27;end&#x27;, onend)
+        stream.removeListener('merge2UnpipeEnd', onend)
+        stream.removeListener('finish', onend)
+        stream.removeListener('end', onend)
         next()
       }
       // skip ended stream
       if (stream._readableState.endEmitted) return next()
 
-      stream.on(&#x27;merge2UnpipeEnd&#x27;, onend)
-      stream.on(&#x27;finish&#x27;, onend)
-      stream.on(&#x27;end&#x27;, onend)
+      stream.on('merge2UnpipeEnd', onend)
+      stream.on('finish', onend)
+      stream.on('end', onend)
       stream.pipe(mergedStream, {end: false})
       // compatible for old stream
       stream.resume()
     }
 
-    for (var i = 0; i &#x3c; streams.length; i++) pipe(streams[i])
+    for (var i = 0; i &lt; streams.length; i++) pipe(streams[i])
 
     next()
   }
 
   function endStream () {
     merging = false
-    // emit &#x27;queueDrain&#x27; when all streams merged.
-    mergedStream.emit(&#x27;queueDrain&#x27;)
-    return doEnd &#x26;&#x26; mergedStream.end()
+    // emit 'queueDrain' when all streams merged.
+    mergedStream.emit('queueDrain')
+    return doEnd &amp;&amp; mergedStream.end()
   }
 
   mergedStream.setMaxListeners(0)
   mergedStream.add = addStream
-  mergedStream.on(&#x27;unpipe&#x27;, function (stream) {
-    stream.emit(&#x27;merge2UnpipeEnd&#x27;)
+  mergedStream.on('unpipe', function (stream) {
+    stream.emit('merge2UnpipeEnd')
   })
 
   if (args.length) addStream.apply(null, args)
@@ -198,3 +191,4 @@
     ]
 </div>
 </div>
+</body></html>

@@ -61,12 +61,134 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.merge2">module merge2</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.merge2.merge2">
+            function <span class="apidocSignatureSpan"></span>merge2
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.merge2.toString">
+            function <span class="apidocSignatureSpan">merge2.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.merge2" id="apidoc.module.merge2">module merge2</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.merge2.merge2" id="apidoc.element.merge2.merge2">
+        function <span class="apidocSignatureSpan"></span>merge2
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function merge2() {
+  var streamsQueue = []
+  var merging = false
+  var args = slice.call(arguments)
+  var options = args[args.length - 1]
+
+  if (options &#x26;&#x26; !Array.isArray(options) &#x26;&#x26; options.pipe == null) args.pop()
+  else options = {}
+
+  var doEnd = options.end !== false
+  if (options.objectMode == null) options.objectMode = true
+  if (options.highWaterMark == null) options.highWaterMark = 64 * 1024
+  var mergedStream = PassThrough(options)
+
+  function addStream () {
+    for (var i = 0, len = arguments.length; i &#x3c; len; i++) {
+      streamsQueue.push(pauseStreams(arguments[i], options))
+    }
+    mergeStream()
+    return this
+  }
+
+  function mergeStream () {
+    if (merging) return
+    merging = true
+
+    var streams = streamsQueue.shift()
+    if (!streams) return endStream()
+    if (!Array.isArray(streams)) streams = [streams]
+
+    var pipesCount = streams.length + 1
+
+    function next () {
+      if (--pipesCount &#x3e; 0) return
+      merging = false
+      mergeStream()
+    }
+
+    function pipe (stream) {
+      function onend () {
+        stream.removeListener(&#x27;merge2UnpipeEnd&#x27;, onend)
+        stream.removeListener(&#x27;finish&#x27;, onend)
+        stream.removeListener(&#x27;end&#x27;, onend)
+        next()
+      }
+      // skip ended stream
+      if (stream._readableState.endEmitted) return next()
+
+      stream.on(&#x27;merge2UnpipeEnd&#x27;, onend)
+      stream.on(&#x27;finish&#x27;, onend)
+      stream.on(&#x27;end&#x27;, onend)
+      stream.pipe(mergedStream, {end: false})
+      // compatible for old stream
+      stream.resume()
+    }
+
+    for (var i = 0; i &#x3c; streams.length; i++) pipe(streams[i])
+
+    next()
+  }
+
+  function endStream () {
+    merging = false
+    // emit &#x27;queueDrain&#x27; when all streams merged.
+    mergedStream.emit(&#x27;queueDrain&#x27;)
+    return doEnd &#x26;&#x26; mergedStream.end()
+  }
+
+  mergedStream.setMaxListeners(0)
+  mergedStream.add = addStream
+  mergedStream.on(&#x27;unpipe&#x27;, function (stream) {
+    stream.emit(&#x27;merge2UnpipeEnd&#x27;)
+  })
+
+  if (args.length) addStream.apply(null, args)
+  return mergedStream
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.merge2.toString" id="apidoc.element.merge2.toString">
+        function <span class="apidocSignatureSpan">merge2.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 </div>
 
