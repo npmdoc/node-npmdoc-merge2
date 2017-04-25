@@ -1,6 +1,6 @@
 # npmdoc-merge2
 
-#### api documentation for  [merge2 (v1.0.3)](https://github.com/teambition/merge2)  [![npm package](https://img.shields.io/npm/v/npmdoc-merge2.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-merge2) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-merge2.svg)](https://travis-ci.org/npmdoc/node-npmdoc-merge2)
+#### basic api documentation for  [merge2 (v1.0.3)](https://github.com/teambition/merge2)  [![npm package](https://img.shields.io/npm/v/npmdoc-merge2.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-merge2) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-merge2.svg)](https://travis-ci.org/npmdoc/node-npmdoc-merge2)
 
 #### Merge multiple streams into one stream in sequence or parallel.
 
@@ -74,7 +74,8 @@
     "scripts": {
         "test": "standard && tman"
     },
-    "version": "1.0.3"
+    "version": "1.0.3",
+    "bin": {}
 }
 ```
 
